@@ -1,0 +1,120 @@
+<html>
+<head>
+<title>PlayState.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,0,255); }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+PlayState.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">felix.flappytrump.gamestate; 
+ 
+</span><span class="s0">import </span><span class="s1">com.badlogic.gdx.Gdx; 
+</span><span class="s0">import </span><span class="s1">com.badlogic.gdx.graphics.g2d.BitmapFont; 
+</span><span class="s0">import </span><span class="s1">com.badlogic.gdx.graphics.g2d.SpriteBatch; 
+</span><span class="s0">import </span><span class="s1">com.badlogic.gdx.math.Rectangle; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.List; 
+ 
+</span><span class="s0">import </span><span class="s1">felix.flappytrump.gameobjects.GameObject; 
+</span><span class="s0">import </span><span class="s1">felix.flappytrump.gameobjects.Player; 
+ 
+</span><span class="s2">/** 
+ * Created by Felix McCuaig on 16/08/2017. 
+ */</span><span class="s1"> 
+ 
+</span><span class="s0">public class </span><span class="s1">PlayState </span><span class="s0">extends </span><span class="s1">State{ 
+    </span><span class="s0">private </span><span class="s1">List&lt;GameObject&gt; gameOjects; 
+    </span><span class="s0">private </span><span class="s1">List&lt;GameObject&gt; collidables; 
+    </span><span class="s0">private </span><span class="s1">GameStateManager gsm; 
+    </span><span class="s0">private int </span><span class="s1">score = </span><span class="s3">0</span><span class="s1">; 
+    </span><span class="s0">private </span><span class="s1">BitmapFont scoreFont; 
+ 
+    </span><span class="s0">public </span><span class="s1">PlayState(List&lt;GameObject&gt; gameObjects, GameStateManager gsm) { 
+        </span><span class="s0">super</span><span class="s1">(); 
+        </span><span class="s0">this</span><span class="s1">.gsm = gsm; 
+        </span><span class="s0">this</span><span class="s1">.gameOjects = gameObjects; 
+        collidables = </span><span class="s0">new </span><span class="s1">ArrayList&lt;GameObject&gt;(); 
+        scoreFont = </span><span class="s0">new </span><span class="s1">BitmapFont(); 
+        scoreFont.getData().setScale(</span><span class="s3">4</span><span class="s1">); 
+ 
+        </span><span class="s0">for</span><span class="s1">(GameObject o : gameObjects) { 
+            </span><span class="s0">if</span><span class="s1">(o.isCollidable()) { 
+                collidables.add(o); 
+            } 
+ 
+            o.setParentState(</span><span class="s0">this</span><span class="s1">); 
+        } 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">create() { 
+ 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">render(SpriteBatch sb) { 
+        </span><span class="s0">for</span><span class="s1">(GameObject object: gameOjects) { 
+            object.render(sb); 
+        } 
+        scoreFont.draw(sb, score + </span><span class="s4">&quot;&quot;</span><span class="s1">, </span><span class="s3">200 </span><span class="s1">- (scoreFont.getScaleX() * </span><span class="s3">20</span><span class="s1">), </span><span class="s3">600</span><span class="s1">); 
+    } 
+ 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">update() { 
+        checkCollisions(); 
+ 
+        </span><span class="s0">for</span><span class="s1">(GameObject object: gameOjects) { 
+            object.update(); 
+        } 
+ 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">updateScore() { 
+        score++; 
+    } 
+ 
+    </span><span class="s0">private void </span><span class="s1">checkCollisions() { 
+        </span><span class="s0">for</span><span class="s1">(GameObject gameObject : collidables) { 
+            </span><span class="s0">for</span><span class="s1">(GameObject object : collidables) { 
+                </span><span class="s0">if</span><span class="s1">(isColliding(gameObject, object) &amp;&amp; gameObject != object) { 
+                    </span><span class="s2">//Gdx.app.log(&quot;COLLISION&quot;, gameObject + &quot;  &quot; + object);</span><span class="s1"> 
+                    </span><span class="s0">if</span><span class="s1">(gsm != </span><span class="s0">null</span><span class="s1">) { 
+                        gsm.push(</span><span class="s0">new </span><span class="s1">MenuState()); 
+                    } </span><span class="s0">else </span><span class="s1">{ 
+                        Gdx.app.log(</span><span class="s4">&quot;GSM&quot;</span><span class="s1">, </span><span class="s4">&quot;IS NULL&quot;</span><span class="s1">); 
+                    } 
+                } 
+            } 
+        } 
+    } 
+ 
+    </span><span class="s0">private boolean </span><span class="s1">isColliding(GameObject a, GameObject b) { 
+        Rectangle aRect = </span><span class="s0">new </span><span class="s1">Rectangle(a.getX(), a.getY(), a.getWidth(), a.getHeight()); 
+        Rectangle bRect = </span><span class="s0">new </span><span class="s1">Rectangle(b.getX(), b.getY(), b.getWidth(), b.getHeight()); 
+        </span><span class="s0">return </span><span class="s1">aRect.overlaps(bRect); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">destroy() { 
+        </span><span class="s0">for</span><span class="s1">(GameObject object: gameOjects) { 
+            object.destroy(); 
+        } 
+    } 
+} 
+</span></pre>
+</body>
+</html>

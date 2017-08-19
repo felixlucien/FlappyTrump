@@ -1,0 +1,83 @@
+<html>
+<head>
+<title>GameStateManager.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+GameStateManager.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">felix.flappytrump.gamestate; 
+ 
+</span><span class="s0">import </span><span class="s1">com.badlogic.gdx.graphics.g2d.SpriteBatch; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.List; 
+</span><span class="s0">import </span><span class="s1">java.util.Stack; 
+ 
+</span><span class="s2">/** 
+ * Created by Felix McCuaig on 16/08/2017. 
+ */</span><span class="s1"> 
+ 
+</span><span class="s0">public class </span><span class="s1">GameStateManager { 
+    Stack&lt;State&gt; gameStates; 
+    State currentState; 
+ 
+    </span><span class="s0">public </span><span class="s1">GameStateManager(Stack&lt;State&gt; gameStates) { 
+        </span><span class="s0">this</span><span class="s1">.gameStates = gameStates; 
+        </span><span class="s2">//currentState = gameStates.get(0);</span><span class="s1"> 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">GameStateManager() { 
+ 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">create() { 
+        </span><span class="s0">for</span><span class="s1">(State s: gameStates) { 
+            s.create(); 
+        } 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">render(SpriteBatch sb) { 
+        gameStates.peek().render(sb); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">update() { 
+        gameStates.peek().update(); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">destroy() { 
+        </span><span class="s0">for</span><span class="s1">(State s: gameStates) { 
+            s.destroy(); 
+        } 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">push(State gameState) { 
+        gameStates.pop(); 
+        gameStates.push(gameState); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">pop() { 
+        gameStates.pop(); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">peek() { 
+        gameStates.peek(); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setGameStates(Stack&lt;State&gt; gameStates) { 
+        </span><span class="s0">this</span><span class="s1">.gameStates = gameStates; 
+    } 
+ 
+} 
+</span></pre>
+</body>
+</html>

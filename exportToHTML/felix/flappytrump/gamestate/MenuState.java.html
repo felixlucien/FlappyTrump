@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>MenuState.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: #999999; font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { color: rgb(0,0,0); }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,0,255); }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+MenuState.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+<span class="s0">package </span><span class="s1">felix.flappytrump.gamestate; 
+ 
+</span><span class="s0">import </span><span class="s1">com.badlogic.gdx.graphics.g2d.BitmapFont; 
+</span><span class="s0">import </span><span class="s1">com.badlogic.gdx.graphics.g2d.SpriteBatch; 
+ 
+</span><span class="s2">/** 
+ * Created by Felix McCuaig on 16/08/2017. 
+ */</span><span class="s1"> 
+ 
+</span><span class="s0">public class </span><span class="s1">MenuState </span><span class="s0">extends </span><span class="s1">State { 
+    BitmapFont menuText; 
+ 
+    </span><span class="s0">public </span><span class="s1">MenuState() { 
+        menuText = </span><span class="s0">new </span><span class="s1">BitmapFont(); 
+        menuText.getData().setScale(</span><span class="s3">2</span><span class="s1">, </span><span class="s3">2</span><span class="s1">); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">create() { 
+ 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">render(SpriteBatch sb) { 
+        menuText.draw(sb, </span><span class="s4">&quot;GAME OVER&quot;</span><span class="s1">, </span><span class="s3">200 </span><span class="s1">- (menuText.getScaleX() * </span><span class="s3">20</span><span class="s1">), </span><span class="s3">400</span><span class="s1">); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">update() { 
+ 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">destroy() { 
+ 
+    } 
+} 
+</span></pre>
+</body>
+</html>
