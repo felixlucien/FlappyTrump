@@ -3,12 +3,10 @@ package felix.flappytrump.actors;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
 
 import java.util.ArrayList;
 
-import felix.flappytrump.gameobjects.GameObject;
-import felix.flappytrump.gamestate.GameStateManager;
+import felix.flappytrump.gameobjects.gameobjectframework.GameObject;
 
 /**
  * Created by Felix McCuaig on 18/08/2017.
@@ -18,8 +16,8 @@ public class Renderer extends Actor {
 
     ArrayList<GameObject> gameObjects;
 
+
     public Renderer(ArrayList<GameObject> gameObjects) {
-        super();
         this.gameObjects = gameObjects;
     }
 

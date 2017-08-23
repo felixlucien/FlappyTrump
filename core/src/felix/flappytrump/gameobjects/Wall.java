@@ -1,10 +1,10 @@
 package felix.flappytrump.gameobjects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+
+import java.util.Random;
 
 import felix.flappytrump.gamestate.PlayState;
 import felix.flappytrump.gamestate.State;
@@ -13,44 +13,76 @@ import felix.flappytrump.gamestate.State;
  * Created by Felix McCuaig on 16/08/2017.
  */
 
-public class Wall extends GameObject{
+public class Wall extends felix.flappytrump.gameobjects.gameobjectframework.GameObject {
 
-    Texture texture;
-    boolean isScore = false;
+    private static final int FLUCTUATION = 130;
+    private static final int LOWEST_OPENING = 120;
+    private static final int TUBE_GAP = 200;
+    private Rectangle boundsTop, boundsBot;
+    private Random rand = new Random();
+    private Texture topTexture, bottomTexture;
+    private boolean isScore = false;
+    private float x;
+    private PlayState parent;
 
-    public Wall(Texture texture, int x, int y, int width, int height, boolean collidable) {
-        super(x, y, width, height, TYPE_PLAYER, collidable);
-        this.texture = texture;
+
+    public Wall(State parent, String tag, Texture top, Texture bottom, float x) {
+        super(tag, parent);
+        this.parent = (PlayState) parent;
+        this.x = x;
+        topTexture = top;
+        bottomTexture = bottom;
+        boundsTop = new Rectangle();
+        boundsBot = new Rectangle();
+        create();
     }
 
     @Override
     public void create() {
+        boundsTop.set(x, (float)(this.rand.nextInt(FLUCTUATION) + TUBE_GAP + LOWEST_OPENING), topTexture.getWidth() , topTexture.getHeight());
+        boundsBot.set(x, this.boundsTop.y - TUBE_GAP - topTexture.getHeight(), bottomTexture.getWidth(), bottomTexture.getHeight());
 
     }
-
 
     @Override
     public void render(Batch sb) {
-        sb.draw(texture, x, y, width, height);
+        sb.draw(topTexture, boundsTop.x, boundsTop.y, boundsTop.getWidth(), boundsTop.getHeight());
+        sb.draw(bottomTexture, boundsBot.x, boundsBot.y, boundsBot.getWidth(), boundsBot.getHeight());
     }
+
+
 
     @Override
     public void update() {
-        if(x < (Gdx.graphics.getWidth() / 2) && !isScore) {
-            isScore = true;
-            parentState.updateScore();
-        }
-
-        if(x < 0) {
-            x = Gdx.graphics.getWidth();
+        if(boundsBot.getX() < 0) {
+            Wall lastWall = (Wall) parent.findObjectByTag("WALL 3");
+            tag = lastWall.tag;
+            x = lastWall.getBoundsBot().getX() + 200;
+            lastWall.tag = "WALL";
+            create();
             isScore = false;
         } else {
-            x--;
+            boundsBot.x--;
+            boundsTop.x--;
         }
     }
 
     @Override
-    public void destroy() {
-        texture.dispose();
+    public void processInput() {
+
+    }
+
+    @Override
+    public void dispose() {
+        topTexture.dispose();
+        bottomTexture.dispose();
+    }
+
+    public Rectangle getBoundsTop() {
+        return boundsTop;
+    }
+
+    public Rectangle getBoundsBot() {
+        return boundsBot;
     }
 }
