@@ -8,7 +8,9 @@ import felix.flappytrump.gamestate.State;
 
 public abstract class GameObject implements GameObjectFramework {
 
+    //The unique id tag for the object
     public String tag;
+    //This is the parent gamestate and allows use of the findObjectByID() method
     public State parent;
 
     public GameObject(String tag, State parent) {

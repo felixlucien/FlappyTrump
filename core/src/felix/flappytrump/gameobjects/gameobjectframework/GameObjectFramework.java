@@ -8,13 +8,18 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 public interface GameObjectFramework {
 
+    //These methods are called by the parent gamestate
     void create();
 
+    //Called onUpdate
     void update();
 
+    //Called when an input event happens
     void processInput();
 
+    //Called onRender
     void render(Batch batch);
 
+    //Called onDispose
     void dispose();
 }

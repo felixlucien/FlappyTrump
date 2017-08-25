@@ -14,13 +14,14 @@ import felix.flappytrump.gameobjects.gameobjectframework.GameObject;
 
 public class Renderer extends Actor {
 
+    //This list of objects are the ones that need to be rendered
     ArrayList<GameObject> gameObjects;
-
 
     public Renderer(ArrayList<GameObject> gameObjects) {
         this.gameObjects = gameObjects;
     }
 
+    //This actually renders all the gameobjects
     @Override
     public void draw(Batch batch, float parentAlpha) {
         for(GameObject object: gameObjects) {
@@ -28,11 +29,13 @@ public class Renderer extends Actor {
         }
     }
 
+    //This is called on the stage.act() method
     @Override
     public void act(float delta) {
         super.act(delta);
     }
 
+    //The rest wont be used
     @Override
     public boolean fire(Event event) {
         return super.fire(event);

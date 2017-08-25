@@ -12,10 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 
 public class Text extends Actor {
 
+    //The font that will render the text
     private BitmapFont bitmapFont;
-
+    //The text itself
     private String text;
-
+    //position of text
     private int x, y;
 
     public Text(BitmapFont bitmapFont, String text, int x, int y) {
@@ -25,6 +26,7 @@ public class Text extends Actor {
         this.y = y;
     }
 
+    //Renders text
     @Override
     public void draw(Batch batch, float parentAlpha) {
         bitmapFont.draw(batch, text, x, y);

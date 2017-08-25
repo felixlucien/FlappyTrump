@@ -1,18 +1,22 @@
 package felix.flappytrump.gameobjects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 
+import felix.flappytrump.gameobjects.gameobjectframework.SimpleGameObject;
 import felix.flappytrump.gamestate.State;
 
 /**
  * Created by Felix McCuaig on 15/08/2017.
  */
 
-public class Player extends felix.flappytrump.gameobjects.gameobjectframework.SimpleGameObject {
+public class Player extends SimpleGameObject {
 
-    private int gravity = -1;
-    public int velocity = 0;
+    //Player y velocity
+    public float velocity = 0;
+
+    private float gravity = -1400;
 
     public Player(State parent, String tag, Rectangle bounds, Texture texture) {
         super(tag, parent, bounds, texture);
@@ -26,25 +30,23 @@ public class Player extends felix.flappytrump.gameobjects.gameobjectframework.Si
 
     @Override
     public void update() {
-        if(velocity > -10) {
-            velocity--;
-        }
+        //Adds velocity to gravity
+        velocity += gravity * Gdx.graphics.getDeltaTime();
 
+
+        //Makes sure bird dosent go through the ground
         if(bounds.y < 0) {
             velocity = 0;
             bounds.y = 0;
         }
 
-        bounds.y = bounds.y + velocity;
+        //adds velocity to position
+        bounds.y += velocity * Gdx.graphics.getDeltaTime();
     }
 
+    //called onClick and adds velocity to player
     @Override
     public void processInput() {
-        velocity = 10;
-    }
-
-    @Override
-    public void dispose() {
-
+        velocity = 400;
     }
 }

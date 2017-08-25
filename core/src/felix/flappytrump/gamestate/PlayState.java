@@ -2,6 +2,7 @@ package felix.flappytrump.gamestate;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -15,22 +16,33 @@ import java.util.ArrayList;
 import felix.flappytrump.actors.Renderer;
 import felix.flappytrump.actors.Text;
 import felix.flappytrump.gameobjects.Background;
+import felix.flappytrump.gameobjects.Wall;
 import felix.flappytrump.gameobjects.gameobjectframework.GameObject;
 import felix.flappytrump.gameobjects.Player;
-import felix.flappytrump.gameobjects.Wall;
-import felix.flappytrump.utils.ResLoader;
-
 /**
  * Created by Felix McCuaig on 16/08/2017.
  */
 
-public class PlayState extends State implements InputProcessor{
+
+
+
+public class PlayState extends State implements InputProcessor {
+    //The below arraylist has all the objects that have to be rendered, updated and are in some cases collidable
     private ArrayList<GameObject> gameObjects;
+    /*
+        This object below is the gamestate manager, this reference will
+         be used to communicate between gamestates and send data between them
+     */
     private GameStateManager gsm;
+    //this is the game score, incremented when the bird (trump) passes the walls
     private int score = 0;
-    private Text scoreText;
+    //OrthographicCamera renders the world as a 2d scene
     private OrthographicCamera cam;
-    private Stage stage;
+    //The stage facilitates smooth rendering of both UI and game elements simultaneously
+    public Stage stage;
+    //this text is a UI object that renders the text that displays the games score
+    private Text scoreText;
+
 
     public PlayState(GameStateManager gsm) {
         this.gsm = gsm;
@@ -38,29 +50,49 @@ public class PlayState extends State implements InputProcessor{
         Gdx.input.setInputProcessor(this);
 
         cam = new OrthographicCamera();
-        FitViewport viewport = new FitViewport(480, 800, cam);
-        cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
 
+        //The viewport is an object that the camera uses to "look through"
+
+        FitViewport viewport;
+
+        //if screen aspect ratio is 16:9 then
+        if(Gdx.graphics.getWidth() / Gdx.graphics.getHeight() == .6) {
+            //viewport is 16:9
+            viewport = new FitViewport(480, 800, cam);
+        } else {
+            //viewport is 1:1
+            viewport = new FitViewport(800, 800, cam);
+        }
+
+
+        //Sets camera position
+        cam.position.set(cam.viewportWidth / 2f, cam.viewportHeight / 2f, 0);
         cam.update();
+
+        //This sets the viewport for the stage
         stage = new Stage(viewport);
 
 
         gameObjects = new ArrayList<GameObject>();
 
-        gameObjects.add(new Background("BACKGROUND", this, new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()), new Texture(Gdx.files.internal("images/background.png"))));
-        gameObjects.add(new Wall(this, "WALL", ResLoader.getTexture("images/topwall.png"), ResLoader.getTexture("images/bottomwall.png"), 600));
-        gameObjects.add(new Wall(this, "WALL", ResLoader.getTexture("images/topwall.png"), ResLoader.getTexture("images/bottomwall.png"), 800));
-        gameObjects.add(new Wall(this, "WALL 3", ResLoader.getTexture("images/topwall.png"), ResLoader.getTexture("images/bottomwall.png"), 1000));
-        gameObjects.add(new Player(this, "PLAYER", new Rectangle(115, 200, 75, 75), new Texture(Gdx.files.internal("trump.png"))));
+        //Game background
+        gameObjects.add(new Background("BACKGROUND", this, new Rectangle(0, 0, stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight()), new Texture(Gdx.files.internal("images/background.png"))));
+        //Sets walls
+        gameObjects.add(new Wall(this, "WALL", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), 600));
+        gameObjects.add(new Wall(this, "WALL", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), 900));
+        gameObjects.add(new Wall(this, "WALL 3", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), 1200));
+        //creates player object
+        gameObjects.add(new Player(this, "PLAYER", new Rectangle((stage.getViewport().getWorldWidth() / 2) - 50, stage.getViewport().getWorldHeight() / 2, 100, 100), new Texture(Gdx.files.internal("trump.png"))));
 
-        BitmapFont scoreFont = new BitmapFont();
+        //This creates a font for the score text to render
+        BitmapFont scoreFont = new BitmapFont(Gdx.files.internal("fonts/fontMedium/font.txt"));
+        scoreFont.getData().setScale(1);
+        scoreFont.setColor(Color.BLACK);
+        scoreText = new Text(scoreFont, score + "", (int) (stage.getViewport().getWorldWidth() / 2 - (scoreFont.getScaleX())), (int) ((int) stage.getViewport().getWorldHeight() - (stage.getViewport().getWorldHeight() / 6)));
 
-
-        scoreFont.getData().setScale(4);
-
-        scoreText = new Text(scoreFont, score + "", (int) (Gdx.graphics.getWidth() / 2 - (scoreFont.getScaleX())), 700);
-
+        //The renderer will render all the items it is given when stage.draw() is called
         stage.addActor(new Renderer(gameObjects));
+        //This adds the text UI component
         stage.addActor(scoreText);
 
         //stage.addActor(new ImageButton(new TextureRegionDrawable(new TextureRegion(img))));
@@ -73,18 +105,25 @@ public class PlayState extends State implements InputProcessor{
 
     @Override
     public void render(Batch sb) {
+        //This updates the camera in case it has been moved in some way
         cam.update();
+        //This ensures that the sprite batch knows its being viewed by the camera
         sb.setProjectionMatrix(cam.combined);
+        //This updates stage components like UI and renderer
         stage.act();
+        //This renders the stage
         stage.draw();
     }
 
 
     @Override
     public void update() {
+        //Updates all of the gameobjects
         for(GameObject object : gameObjects) {
             object.update();
         }
+
+        //Makes sures the scoretext is the same as the score int
         scoreText.setText(score + "");
     }
 
@@ -92,6 +131,10 @@ public class PlayState extends State implements InputProcessor{
         score++;
     }
 
+
+    /*
+        This method is used by objects to get instances of other objects
+     */
     public GameObject findObjectByTag(String tag) {
         for(GameObject object: gameObjects) {
             if(object.tag == tag) {
@@ -101,6 +144,7 @@ public class PlayState extends State implements InputProcessor{
         return null;
     }
 
+    //Disposes all of the gameobjects to reduce memory leaks
     @Override
     public void destroy() {
         for(GameObject object: gameObjects) {
@@ -108,6 +152,7 @@ public class PlayState extends State implements InputProcessor{
         }
     }
 
+    //all of these are called when the user gives input such as keyPress and touchDown and mouseDrag
     @Override
     public boolean keyDown(int keycode) {
         return false;

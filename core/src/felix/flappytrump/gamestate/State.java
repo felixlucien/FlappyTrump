@@ -9,6 +9,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class State {
 
+    /*
+        This class is the framework of the gamestates and implements the methods create, render,
+        update and destroy. This means that no matter what gamestate is the current state, these methods
+        these methods can be called. All of the gamestate classes extend this class
+     */
+
     public State() {
         create();
     }

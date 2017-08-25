@@ -8,10 +8,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class FontUtils {
 
+
+    //This is used to create fonts faster and more efficiently
     public static BitmapFont createFont(int scale) {
         BitmapFont font = new BitmapFont();
         font.getData().setScale(scale);
-
         return font;
     }
 

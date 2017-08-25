@@ -14,10 +14,13 @@ import felix.flappytrump.utils.FontUtils;
 
 public class MenuState extends State {
     private Text mainMenuText;
+
+    //this stage is just for rendering the menu GUI
     private Stage stage;
 
     public MenuState() {
         stage = new Stage();
+        //creates new text and sets font size to 5
         stage.addActor(mainMenuText = new Text(FontUtils.createFont(5), "GAME OVER", (int) (200 - (mainMenuText.getScaleX() * 20)), 400));
     }
 
