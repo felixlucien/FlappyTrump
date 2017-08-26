@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
 
@@ -42,23 +44,31 @@ public class PlayState extends State implements InputProcessor {
     public Stage stage;
     //this text is a UI object that renders the text that displays the games score
     private Text scoreText;
+    //The viewport params will be set according to this
+    private float aspectRatio;
 
 
     public PlayState(GameStateManager gsm) {
         this.gsm = gsm;
+
+
 
         Gdx.input.setInputProcessor(this);
 
         cam = new OrthographicCamera();
 
         //The viewport is an object that the camera uses to "look through"
+        Viewport viewport;
 
-        FitViewport viewport;
 
-        //if screen aspect ratio is 16:9 then
-        if(Gdx.graphics.getWidth() / Gdx.graphics.getHeight() == .6) {
-            //viewport is 16:9
-            viewport = new FitViewport(480, 800, cam);
+        //This calculates the aspect ratio of the device
+        float height = Gdx.app.getGraphics().getHeight();
+        float width = Gdx.app.getGraphics().getWidth();
+        aspectRatio = height / width;
+
+        if(aspectRatio < 2 && aspectRatio > 1.6) {
+            //viewport is 16:9 or close
+            viewport = new FillViewport(480, 800, cam);
         } else {
             //viewport is 1:1
             viewport = new FitViewport(800, 800, cam);

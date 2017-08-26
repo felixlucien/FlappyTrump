@@ -9,6 +9,7 @@ import java.util.Stack;
 
 import felix.flappytrump.gamestate.GameStateManager;
 import felix.flappytrump.gamestate.PlayState;
+import felix.flappytrump.gamestate.StartState;
 import felix.flappytrump.gamestate.State;
 public class FlappyTrump extends ApplicationAdapter {
 
@@ -31,7 +32,7 @@ public class FlappyTrump extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		gsm = new GameStateManager();
 		Stack<State> gameStates = new Stack<State>();
-		gameStates.add(new PlayState(gsm));
+		gameStates.add(new StartState(gsm));
 		gsm.setGameStates(gameStates);
 		gsm.create();
 	}
