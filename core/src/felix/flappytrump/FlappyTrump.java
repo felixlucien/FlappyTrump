@@ -5,6 +5,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Stack;
 
 import felix.flappytrump.gamestate.GameStateManager;
@@ -13,6 +24,7 @@ import felix.flappytrump.gamestate.StartState;
 import felix.flappytrump.gamestate.State;
 public class FlappyTrump extends ApplicationAdapter {
 
+	public static int HIGH_SCORE = 0;
 	/*
 		Sprite batch is the object that LibGdx (the backend rendering framework), uses to render objects such as
 		Texture; an object in which a image file (such as a jpg, gif, png) can be loaded into and rendered onto the screen

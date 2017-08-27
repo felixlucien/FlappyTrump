@@ -2,10 +2,13 @@ package felix.flappytrump.gamestate;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -16,10 +19,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import felix.flappytrump.actors.Renderer;
 import felix.flappytrump.actors.Renderer2D;
+import felix.flappytrump.actors.Text;
+import felix.flappytrump.gameobjects.Player;
+import felix.flappytrump.gameobjects.PlayerStart;
+import felix.flappytrump.gameobjects.gameobjectframework.GameObject;
 
 /**
  * Created by Felix McCuaig on 25/08/2017.
@@ -27,27 +39,46 @@ import felix.flappytrump.actors.Renderer2D;
 
 public class StartState extends State{
 
-    private float width, height;
     private ImageButton startButton, settingsButton, optionsButton, removeAdsButton, soundButton;
-    private Button test;
     private Stage stage;
     private GameStateManager gameStateManager;
     private Texture background;
+    private CopyOnWriteArrayList<GameObject> gameObjects;
 
     public StartState(GameStateManager gsm) {
 
 
-        stage = new Stage();
+        //The viewport is an object that the camera uses to "look through"
+        Viewport viewport;
+
+        //This calculates the aspect ratio of the device
+        float height = Gdx.app.getGraphics().getHeight();
+        float width = Gdx.app.getGraphics().getWidth();
+        float aspectRatio = height / width;
+
+        //sets viewport so scaling looks good
+        if(aspectRatio < 2 && aspectRatio > 1.6) {
+            //viewport is 16:9 or close
+            viewport = new FillViewport(480, 800);
+        } else if(aspectRatio < 1.6 && aspectRatio > 1){
+            //viewport is 1:1
+            viewport = new FitViewport(800, 800);
+        } else {
+            viewport = new FitViewport(width, height);
+        }
+
+        stage = new Stage(viewport);
+
         Gdx.input.setInputProcessor(stage);
 
         gameStateManager = gsm;
 
-        width = Gdx.graphics.getWidth();
-        height = Gdx.graphics.getHeight();
+        float gameWidth = stage.getViewport().getWorldWidth();
+        float gameHeight = stage.getViewport().getWorldHeight();
 
         startButton = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture("images/playbutton.png"))));
-        startButton.setSize(width, height / 4);
-        startButton.setPosition(width / 2 - (startButton.getWidth() / 2), height / 2);
+        startButton.setSize(gameWidth, gameHeight / 4);
+        startButton.setPosition(gameWidth / 2 - (startButton.getWidth() / 2), gameHeight / 5);
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -56,13 +87,27 @@ public class StartState extends State{
             }
         });
 
+        gameObjects = new CopyOnWriteArrayList<GameObject>();
+        Texture trumpTexture = new Texture(Gdx.files.internal("trump.png"));
+        gameObjects.add(new PlayerStart(this, "PLAYER", new Rectangle((stage.getViewport().getWorldWidth() / 2) - 50, stage.getViewport().getWorldHeight() / 2, 100, 100), trumpTexture));
+
+
 
         ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 
         Sprite sprite = new Sprite(new Texture("images/background.png"));
-        sprite.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        sprite.setBounds(0, 0, gameWidth, gameHeight);
         sprites.add(sprite);
+
         stage.addActor(new Renderer2D(sprites));
+        stage.addActor(new Renderer(gameObjects));
+
+        BitmapFont font = new BitmapFont(Gdx.files.internal("fonts/font.fnt"));
+        font.setColor(Color.BLACK);
+        font.getData().setScale(2);
+        String startText = "Flappy Trump";
+        stage.addActor(new Text(font, startText, stage.getViewport().getWorldWidth() / 2 - (18 * startText.length()), (stage.getViewport().getWorldHeight() / 4) * 3));
+
         stage.addActor(startButton);
     }
 
@@ -81,7 +126,9 @@ public class StartState extends State{
 
     @Override
     public void update() {
-
+        for(GameObject object : gameObjects) {
+            object.update();
+        }
     }
 
     @Override

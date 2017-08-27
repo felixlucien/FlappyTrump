@@ -17,9 +17,9 @@ public class Text extends Actor {
     //The text itself
     private String text;
     //position of text
-    private int x, y;
+    private float x, y;
 
-    public Text(BitmapFont bitmapFont, String text, int x, int y) {
+    public Text(BitmapFont bitmapFont, String text, float x, float y) {
         this.bitmapFont = bitmapFont;
         this.text = text;
         this.x = x;
@@ -68,7 +68,7 @@ public class Text extends Actor {
         this.text = text;
     }
 
-    public int getPosX() {
+    public float getPosX() {
         return x;
     }
 
@@ -76,7 +76,7 @@ public class Text extends Actor {
         this.x = x;
     }
 
-    public int getPosY() {
+    public float getPosY() {
         return y;
     }
 

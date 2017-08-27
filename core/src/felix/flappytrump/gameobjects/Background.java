@@ -15,7 +15,7 @@ public class Background extends felix.flappytrump.gameobjects.gameobjectframewor
     //This class is used to render the background of the scene
 
     public Background(String tag, State parent, Rectangle bounds, Texture texture) {
-        super(tag, parent, bounds, texture);
+        super(tag, parent, false, bounds, texture);
     }
 
     @Override
@@ -25,6 +25,11 @@ public class Background extends felix.flappytrump.gameobjects.gameobjectframewor
 
     @Override
     public void update() {
+
+    }
+
+    @Override
+    public void updateWhenDead() {
 
     }
 

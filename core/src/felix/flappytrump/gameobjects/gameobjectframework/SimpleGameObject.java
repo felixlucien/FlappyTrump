@@ -17,8 +17,8 @@ public abstract class SimpleGameObject extends felix.flappytrump.gameobjects.gam
     //The objects texture
     public Texture texture;
 
-    public SimpleGameObject(String tag, State parent, Rectangle bounds, Texture texture) {
-        super(tag, parent);
+    public SimpleGameObject(String tag, State parent, boolean isCollidable, Rectangle bounds, Texture texture) {
+        super(tag, GameObject.TYPE_SIMPLE_GAME_OBJECT, parent, isCollidable);
         this.bounds = bounds;
         this.texture = texture;
     }

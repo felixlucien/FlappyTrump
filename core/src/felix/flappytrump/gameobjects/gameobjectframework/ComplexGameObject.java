@@ -16,14 +16,14 @@ import felix.flappytrump.gamestate.State;
 public abstract class ComplexGameObject extends GameObject {
 
     //This is used for the position of the gameobject
-    Rectangle bounds;
+    private Rectangle bounds;
     //This facillitates more than one collision box for the game object, and polygon means they can be complex
-    List<Polygon> collisionBoxes;
+    public List<Polygon> collisionBoxes;
     //The gameobject texture
-    Texture texture;
+    private Texture texture;
 
-    public ComplexGameObject(String tag, State parent) {
-        super(tag, parent);
+    public ComplexGameObject(String tag, State parent, boolean isCollidable) {
+        super(tag, GameObject.TYPE_COMPLEX_GAME_OBJECT, parent, isCollidable);
     }
 
     //This renderes the gameobject

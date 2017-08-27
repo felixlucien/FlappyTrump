@@ -44,6 +44,7 @@ public class GameStateManager {
     }
 
     public void push(State gameState) {
+        gameStates.peek().destroy();
         gameStates.pop();
         gameStates.push(gameState);
     }

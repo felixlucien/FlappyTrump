@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import felix.flappytrump.gameobjects.gameobjectframework.GameObject;
 
@@ -18,10 +19,10 @@ import felix.flappytrump.gameobjects.gameobjectframework.GameObject;
 public class Renderer extends Actor {
 
     //This list of objects are the ones that need to be rendered
-    ArrayList<GameObject> gameObjects;
+    CopyOnWriteArrayList<GameObject> gameObjects;
     ArrayList<Sprite> images;
 
-    public Renderer(ArrayList<GameObject> gameObjects) {
+    public Renderer(CopyOnWriteArrayList<GameObject> gameObjects) {
         this.gameObjects = gameObjects;
     }
 

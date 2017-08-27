@@ -14,6 +14,8 @@ public interface GameObjectFramework {
     //Called onUpdate
     void update();
 
+    void updateWhenDead();
+
     //Called when an input event happens
     void processInput();
 

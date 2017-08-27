@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
 
+import felix.flappytrump.gameobjects.gameobjectframework.GameObject;
 import felix.flappytrump.gamestate.PlayState;
 import felix.flappytrump.gamestate.State;
 
@@ -17,13 +18,15 @@ import felix.flappytrump.gamestate.State;
 public class Wall extends felix.flappytrump.gameobjects.gameobjectframework.GameObject {
 
     //How much the walls can fluctuate their Y
-    private static final int FLUCTUATION = 400;
+    public static final int FLUCTUATION = 400;
     //Makes sure walls are at least 120 high
-    private static final int LOWEST_OPENING = 120;
+    public static final int LOWEST_OPENING = 120;
     //Makes sure the gap in the tube is 200 y
-    private static final int TUBE_GAP = 200;
+    public static final int TUBE_GAP = 200;
     //Makes sure walls are 300 x apart
-    private static final int WALL_SPACING_X = 300;
+    public static final int WALL_SPACING_X = 300;
+    //wall speed
+    public static final int SPEED = 4;
 
     //Collision boxed
     private Rectangle boundsTop, boundsBot;
@@ -41,8 +44,10 @@ public class Wall extends felix.flappytrump.gameobjects.gameobjectframework.Game
     //Has the score been incremented this "Cycle"
     private boolean isScore;
 
+
+
     public Wall(State parent, String tag, Texture top, Texture bottom, float x) {
-        super(tag, parent);
+        super(tag, GameObject.TYPE_WALL, parent, true);
         this.parent = (PlayState) parent;
         this.x = x;
         topTexture = top;
@@ -78,17 +83,21 @@ public class Wall extends felix.flappytrump.gameobjects.gameobjectframework.Game
             lastWall.tag = "WALL";
             create();
             isScore = false;
-        } else {
+        } else if(parent.isPlaying()){
             //move wall left
-            boundsBot.x -= 1.5;
-            boundsTop.x -= 1.5;
+            boundsBot.x -= SPEED;
+            boundsTop.x -= SPEED;
         }
 
         if(!isScore && boundsTop.getX() < ((parent.stage.getViewport().getWorldWidth() / 2) - bottomTexture.getWidth() / 2)) {
             parent.updateScore();
-            Gdx.app.log("SCORE: ", "SCORE UPDATED" + Gdx.graphics.getDeltaTime());
             isScore = true;
         }
+
+    }
+
+    @Override
+    public void updateWhenDead() {
 
     }
 
