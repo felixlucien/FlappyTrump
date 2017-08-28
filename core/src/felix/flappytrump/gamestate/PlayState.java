@@ -2,6 +2,8 @@ package felix.flappytrump.gamestate;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,6 +23,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import felix.flappytrump.FlappyTrump;
@@ -65,11 +68,19 @@ public class PlayState extends State implements InputProcessor {
     //this is so walls dont come immediatley
     private boolean isPlaying = false;
 
+    private  ArrayList<Music> sounds;
+    private Music music;
+
     private Player player;
 
-    public PlayState(GameStateManager gsm) {
-        this.gsm = gsm;
+    private Random random;
 
+    public PlayState(GameStateManager gsm, ArrayList<Music> sounds) {
+        this.gsm = gsm;
+        this.sounds = sounds;
+        random = new Random();
+        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/startmusic.mp3"));
+        music.play();
         Gdx.input.setInputProcessor(this);
 
         //create camera
@@ -119,9 +130,15 @@ public class PlayState extends State implements InputProcessor {
 
         gameObjects.add(new Background("BACKGROUND", this, new Rectangle(0, 0, worldWidth, worldHeight * imageAspectRatio), bg));
         //Sets walls
-        gameObjects.add(new Wall(this, "WALL", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), 1000));
-        gameObjects.add(new Wall(this, "WALL", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), 1300));
-        gameObjects.add(new Wall(this, "WALL 3", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), 1600));
+        gameObjects.add(new Wall(this, "WALL", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), stage.getViewport().getWorldWidth() + 300 * 1));
+        gameObjects.add(new Wall(this, "WALL", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), stage.getViewport().getWorldWidth() + 300 * 2));
+        gameObjects.add(new Wall(this, "WALL", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), stage.getViewport().getWorldWidth() + 300 * 3));
+        gameObjects.add(new Wall(this, "WALL", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), stage.getViewport().getWorldWidth() + 300 * 4));
+        gameObjects.add(new Wall(this, "WALL", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), stage.getViewport().getWorldWidth() + 300 * 5));
+        gameObjects.add(new Wall(this, "WALL", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), stage.getViewport().getWorldWidth() + 300 * 6));
+        gameObjects.add(new Wall(this, "WALL", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), stage.getViewport().getWorldWidth() + 300 * 7));
+        gameObjects.add(new Wall(this, "WALL", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), stage.getViewport().getWorldWidth() + 300 * 8));
+        gameObjects.add(new Wall(this, "WALL 3", new Texture(Gdx.files.internal("images/topwall.png")), new Texture(Gdx.files.internal("images/bottomwall.png")), stage.getViewport().getWorldWidth() + 300 * 9));
 
         //Ground object
         Texture groundTexture = new Texture(Gdx.files.internal("images/ground.jpg"));
@@ -180,11 +197,9 @@ public class PlayState extends State implements InputProcessor {
 
         if(isDead) {
             timer += Gdx.graphics.getDeltaTime();
-
             for(GameObject object : gameObjects) {
                 object.updateWhenDead();
             }
-
             if(timer > maxTime) {
                 gsm.push(new DeadState(this, gsm));
             }
@@ -197,11 +212,31 @@ public class PlayState extends State implements InputProcessor {
             //Makes sures the scoretext is the same as the score int
             scoreText.setText(score + "");
         }
-
-
     }
 
+    Music currentSound;
     public void updateScore() {
+        //currentSound = random.nextInt(sounds.size() - 1);
+        if(currentSound != null) {
+            if(!currentSound.isPlaying()) {
+                currentSound = sounds.get(random.nextInt(sounds.size() - 1));
+                currentSound.play();
+            } else {
+                currentSound.setOnCompletionListener(new Music.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(Music music) {
+                        currentSound = sounds.get(random.nextInt(sounds.size() - 1));
+                        currentSound.play();
+                    }
+                });
+            }
+        } else {
+            currentSound = sounds.get(random.nextInt(sounds.size() - 1));
+            currentSound.play();
+        }
+
+
+        Gdx.app.log("SOUNDS", sounds.size() + "");
         score++;
         scoreText.setPosX((int) (stage.getViewport().getWorldWidth() / 2 - (18 * scoreText.getText().length())));
     }
@@ -256,6 +291,10 @@ public class PlayState extends State implements InputProcessor {
     //Disposes all of the gameobjects to reduce memory leaks
     @Override
     public void destroy() {
+        for(Music sound : sounds) {
+            sound.dispose();
+        }
+
         for(GameObject object: gameObjects) {
             object.dispose();
         }
@@ -279,6 +318,9 @@ public class PlayState extends State implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if(music.isPlaying()) {
+            music.stop();
+        }
         isPlaying = true;
         for(GameObject object : gameObjects) {
             object.processInput();

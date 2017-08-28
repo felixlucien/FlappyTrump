@@ -1,8 +1,12 @@
 package felix.flappytrump.gamestate;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -13,6 +17,7 @@ import java.util.Stack;
 public class GameStateManager {
     Stack<State> gameStates;
     State currentState;
+    ArrayList<Music> sounds;
 
     public GameStateManager(Stack<State> gameStates) {
         this.gameStates = gameStates;
@@ -24,6 +29,12 @@ public class GameStateManager {
     }
 
     public void create() {
+        sounds = new ArrayList<Music>();
+
+        for(int i = 0; i < 9; i++) {
+            sounds.add(Gdx.audio.newMusic(Gdx.files.internal("sounds/sound" + i + ".wav")));
+        }
+
         for(State s: gameStates) {
             s.create();
         }

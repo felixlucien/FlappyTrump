@@ -111,7 +111,7 @@ public class DeadState extends State {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                gsm.push(new PlayState(gsm));
+                gsm.push(new PlayState(gsm, gsm.sounds));
             }
         });
         stage.addActor(startButton);

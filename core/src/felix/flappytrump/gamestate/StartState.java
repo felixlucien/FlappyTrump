@@ -2,6 +2,7 @@ package felix.flappytrump.gamestate;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -44,10 +45,12 @@ public class StartState extends State{
     private GameStateManager gameStateManager;
     private Texture background;
     private CopyOnWriteArrayList<GameObject> gameObjects;
+    private Music music;
 
     public StartState(GameStateManager gsm) {
 
-
+        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/startmusic.mp3"));
+        music.play();
         //The viewport is an object that the camera uses to "look through"
         Viewport viewport;
 
@@ -83,7 +86,8 @@ public class StartState extends State{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                gameStateManager.push(new PlayState(gameStateManager));
+                music.stop();
+                gameStateManager.push(new PlayState(gameStateManager, gameStateManager.sounds));
             }
         });
 
